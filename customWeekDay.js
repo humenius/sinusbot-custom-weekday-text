@@ -10,9 +10,8 @@ registerPlugin({
     hidden: false,
     vars: [{
         name: "channelId",
-        type: "string",
-        title: "Channel for display:",
-        placeholder: "1"
+        type: "channel",
+        title: "Channel for display"
     }, 
     {
         name: "textFormat",
@@ -23,8 +22,14 @@ registerPlugin({
     {
         name: "texts",
         type: "array",
-        title: "Text for each day",
+        title: "Text for each day (only first array element will be used!)",
         vars: [{
+            name: "sunday",
+            type: "string",
+            title: "Sunday",
+            placeholder: "My Sunday"
+        },
+        {
             name: "monday",
             type: "string",
             title: "Monday",
@@ -59,12 +64,6 @@ registerPlugin({
             type: "string",
             title: "Saturday",
             placeholder: "My Saturday"
-        },
-        {
-            name: "sunday",
-            type: "string",
-            title: "Sunday",
-            placeholder: "My Sunday"
         }]
     }]
 }, (_, config, { name, version, author }) => {
@@ -74,15 +73,15 @@ registerPlugin({
     if (!doesConfigExist())
         return logError("Plugin is not configured properly.");
 
-    let weekDay = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-    var currentDay = weekDay[new Date().getDay()];
+    let customWeekDayText = config.texts[0];
+    var currentDay = new Date().getDay();
 
     setInterval(() => {
         let today = new Date().getDay();
 
-        if (weekDay[today] !== currentDay) {
-            currentDay = weekDay[today]
-            updateDayText(currentDay);
+        if (today !== currentDay) {
+            currentDay = today;
+            updateDayText(customWeekDayText[currentDay]);
         }
     }, 1000)
 
@@ -93,10 +92,7 @@ registerPlugin({
     }
 
     function doesConfigExist(config) {
-        return !(config === undefined
-            || config.channelId === undefined 
-            || config.textFormat === undefined 
-            || config.texts === undefined);
+        return !(config || config.channelId || config.textFormat || config.texts || config.texts[0]);
     }
 
     function log(text) {
