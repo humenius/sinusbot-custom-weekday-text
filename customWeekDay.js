@@ -22,7 +22,7 @@ registerPlugin({
     {
         name: "texts",
         type: "array",
-        title: "Text for each day (only first array element will be used!)",
+        title: "Text for each day (only first array texts will be used!)",
         vars: [{
             name: "sunday",
             type: "string",
@@ -70,11 +70,20 @@ registerPlugin({
     const backend = require('backend');
     const engine = require('engine');
 
-    if (!doesConfigExist())
+    if (!doesConfigExist(config))
         return logError("Plugin is not configured properly.");
 
-    let customWeekDayText = config.texts[0];
+    let customWeekDayText = [];
+    let texts = config.texts[0];
+    customWeekDayText.push(texts.sunday);
+    customWeekDayText.push(texts.monday);
+    customWeekDayText.push(texts.tuesday);
+    customWeekDayText.push(texts.wednesday);
+    customWeekDayText.push(texts.thursday);
+    customWeekDayText.push(texts.saturday);
+
     var currentDay = new Date().getDay();
+    updateDayText(customWeekDayText[currentDay]);
 
     setInterval(() => {
         let today = new Date().getDay();
@@ -88,11 +97,16 @@ registerPlugin({
     function updateDayText(dayText) {
         let channel = backend.getChannelByID(config.channelId);
         let channelText = config.textFormat.replace("%text%", dayText);
+
+        if (!channel)
+            return logError(`Updating text failed: Could not find channel with ID ${config.channelId}`);
+
+        log(`Updating name of channel ${channel.id()} [${config.channelId}] ${config.channelId} to ${channelText}`);
         channel.update({name: channelText});
     }
 
     function doesConfigExist(config) {
-        return !(config || config.channelId || config.textFormat || config.texts || config.texts[0]);
+        return (config || config.channelId || config.textFormat || config.texts || config.texts[0]);
     }
 
     function log(text) {
