@@ -2,7 +2,7 @@ registerPlugin({
     name: "Custom Week Day Text",
     version: "0.0.1",
     author: "Humenius <contact[at]humenius.me>",
-    description: "Displays a custom set text for specific days"
+    description: "Displays a custom set text for specific days",
     backends: ["ts3"],
     engine: ">= 1.0",
     autorun: false,
