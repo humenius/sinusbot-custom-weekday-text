@@ -93,10 +93,10 @@ registerPlugin({
     }
 
     function doesConfigExist(config) {
-        return !(config == undefined
+        return !(config === undefined
             || config.channelId === undefined 
             || config.textFormat === undefined 
-            || config.texts == undefined);
+            || config.texts === undefined);
     }
 
     function log(text) {
