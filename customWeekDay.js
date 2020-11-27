@@ -80,6 +80,7 @@ registerPlugin({
     customWeekDayText.push(texts.tuesday);
     customWeekDayText.push(texts.wednesday);
     customWeekDayText.push(texts.thursday);
+    customWeekDayText.push(texts.friday);
     customWeekDayText.push(texts.saturday);
 
     var currentDay = new Date().getDay();
